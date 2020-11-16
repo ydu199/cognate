@@ -1,0 +1,69 @@
+---
+title: "Model"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+eng<-read.csv("eng.csv")
+eng
+
+#44 items labeled as cognate/noncognate.
+eng1<-eng%>%filter(!word %in% c('bed','tree', 'pencil', 'house', 'whistle','scissors','saw','toothbrush','pretzal','bench','globe','wreath','cactus','escalator','pelican',
+                              'stethoscope','palette'))
+#eng1
+#write.csv(eng1,"eng1.csv",row.names=FALSE)
+```
+
+```{r}
+#code： cognate=1, noncognate=0.
+eng1$cognate[eng1$word %in% c('comb','broom','octupus','mushroom','hanger','wheelchair','snail','seahorse','wreath',
+'beaver','stilts','acorn','knocker','muzzle','funnel','noose','latch','scroll','tongs','yoke','tres','protract')] <- 0
+eng1$cognate[!eng1$word %in% c('comb','broom','octupus','mushroom','hanger','wheelchair','snail','seahorse','wreath',
+'beaver','stilts','acorn','knocker','muzzle','funnel','noose','latch','scroll','tongs','yoke','tres','protract')] <- 1
+#eng1
+```
+
+
+```{r}
+spa<-read.csv("spa.csv")
+#spa
+```
+```{r}
+#44 items labeled as cognate/noncognate.
+spa1<-spa%>%filter(!word %in% c('bed','tree', 'pencil', 'house', 'whistle','scissors','saw','toothbrush','pretzal','bench','globe','wreath','cactus','escalator','pelican',
+                              'stethoscope','palette'))
+#spa1
+#write.csv(spa1,"spa1.csv",row.names=FALSE)
+```
+```{r}
+#code： cognate=1, noncognate=0.
+spa1$cognate[spa1$word %in% c('comb','broom','octupus','mushroom','hanger','wheelchair','snail','seahorse','wreath',
+'beaver','stilts','acorn','knocker','muzzle','funnel','noose','latch','scroll','tongs','yoke','tres','protract')] <- 0
+spa1$cognate[!spa1$word %in% c('comb','broom','octupus','mushroom','hanger','wheelchair','snail','seahorse','wreath',
+'beaver','stilts','acorn','knocker','muzzle','funnel','noose','latch','scroll','tongs','yoke','tres','protract')] <- 1
+#spa1
+```
+
+```{r}
+#logistic regression model for english data:
+M1<-glm(accuracy~cognate, family=binomial(link="logit"),data=eng1)
+summary(M1)
+```
+
+invlogit(-0.46+0.0.13*1)=0.42
+invlogit(-0.46)=0.39
+
+
+```{r}
+#logistic regression model for spanish data:
+M2<-glm(accuracy~cognate, family=binomial(link="logit"),data=spa1)
+summary(M2)
+```
+
+invlogit(-1.01+0.27*1)=0.32
+invlogit(-1.01)=0.26
